@@ -1,0 +1,6 @@
+celery
+SQLAlchemy
+tornado
+requests
+hashlib
+Pillow
