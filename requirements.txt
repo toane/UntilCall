@@ -1,3 +1,5 @@
+pytest
+redis
 celery
 SQLAlchemy
 tornado
