@@ -1,3 +1,4 @@
+from io import BytesIO
 from typing import List
 
 from tornado.web import RequestHandler, Application, url
@@ -9,6 +10,7 @@ import tornado.ioloop
 from datetime import datetime
 from os import path
 import requests
+from PIL import Image
 import logging
 import base64
 import json
@@ -80,6 +82,8 @@ class FetchImageRequestHandler(RequestHandler):
             session.commit()
             try:
                 im, b64im, ext = self.download(image_url)
+                # check if target can be parsed as an image
+                Image.open(BytesIO(im))
                 imhash = md5(im).hexdigest()
                 exists = check_image_exists(imhash)
                 if not exists:
@@ -95,6 +99,9 @@ class FetchImageRequestHandler(RequestHandler):
                     self.write(res)
             except ConnectionError as ce:
                 res = {"status":"error","error":"couldn't download image at %s" % image_url}
+                self.write(res)
+            except OSError as ose:
+                res = {"status": "error", "error": "%s doesn't look like a picture file" % image_url}
                 self.write(res)
 
 if __name__ == "__main__":
