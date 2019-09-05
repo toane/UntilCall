@@ -45,6 +45,11 @@ class WatchPicture(RequestHandler):
 
 class BrowseImageCatalogue(RequestHandler):
 
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
     def get(self):
         rows = {"items": [{"url":k.url,"ocr_status":k.ocr_status.name,"ocr_result":k.ocr_result,"md5": k.imhash} for k in get_catalogue()]}
         self.write(rows)
